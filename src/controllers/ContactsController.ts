@@ -55,10 +55,10 @@ export class ContactsController {
         const { id } = request.params
         try {
             await this.contactService.deleteContact(Number(id))
-            response.status(204).send()
+            response.status(200).send({ message: "Usuario excluido com sucesso" })
         } catch (error: any) {
             if (error.message === 'Contact not found') {
-                return response.status(404).send({ error: 'Contact not found' })
+                return response.status(404).send({ error: error.message })
             }
             response.status(500).send({ error: "Error deleting contact" })
         }
