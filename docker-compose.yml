@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: crudnode_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: crudnode
+    volumes:
+      - postgres_data_18:/var/lib/postgresql
+
+volumes:
+  postgres_data_18:
