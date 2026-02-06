@@ -18,9 +18,9 @@ export class ContactsController {
         try {
             const contacts = await this.contactService.getAllContacts()
             response.status(200).send(contacts)
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching contacts:", error)
-            response.status(500).send({ error: "Error fetching contacts" })
+            response.status(500).send({ error: "Error fetching contacts", details: error.message })
         }
     }
 
