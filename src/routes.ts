@@ -1,9 +1,15 @@
-import { createContact, deleteContact, getAllContacts, getContactById, updateContact } from './controllers/contactsController'
+import { ContactsController } from './controllers/ContactsController'
+import { PrismaContactRepository } from './repositories/prisma/PrismaContactRepository'
+import { ContactService } from './services/ContactService'
+
+const contactRepository = new PrismaContactRepository()
+const contactService = new ContactService(contactRepository)
+const contactsController = new ContactsController(contactService)
 
 export default async function routes(app: any, _options: any) {
-    app.post('/contacts/create', createContact)
-    app.get('/contacts/list', getAllContacts)
-    app.get('/contacts/:id', getContactById)
-    app.put('/contacts/update/:id', updateContact)
-    app.delete('/contacts/delete/:id', deleteContact)
+    app.post('/contacts', contactsController.create)
+    app.get('/contacts', contactsController.getAll)
+    app.get('/contacts/:id', contactsController.getById)
+    app.put('/contacts/:id', contactsController.update)
+    app.delete('/contacts/:id', contactsController.delete)
 }

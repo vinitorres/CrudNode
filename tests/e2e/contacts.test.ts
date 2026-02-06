@@ -16,7 +16,7 @@ describe('Contacts E2E', () => {
         await app.ready()
     })
 
-    it('GET /contacts/list should return list of contacts', async () => {
+    it('GET /contacts should return list of contacts', async () => {
         const mockContacts = [
             { id: 1, name: 'Alice', surname: 'Smith', phone: '9876543210', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
         ]
@@ -25,14 +25,14 @@ describe('Contacts E2E', () => {
 
         const response = await app.inject({
             method: 'GET',
-            url: '/contacts/list'
+            url: '/contacts'
         })
 
         expect(response.statusCode).toBe(200)
         expect(JSON.parse(response.payload)).toEqual(JSON.parse(JSON.stringify(mockContacts)))
     })
 
-    it('POST /contacts/create should create a contact', async () => {
+    it('POST /contacts should create a contact', async () => {
         const newContact = {
             name: 'Bob',
             surname: 'Builder',
@@ -50,7 +50,7 @@ describe('Contacts E2E', () => {
 
         const response = await app.inject({
             method: 'POST',
-            url: '/contacts/create',
+            url: '/contacts',
             payload: newContact
         })
 

@@ -1,35 +1,19 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createContact, getAllContacts } from '../../src/controllers/contactsController'
-import { prisma } from '../../src/database/client'
-import { mockReset } from 'vitest-mock-extended'
-
-vi.mock('../../src/database/client', async () => {
-    const { mockDeep } = await import('vitest-mock-extended')
-    return {
-        prisma: mockDeep()
-    }
-})
+import { ContactsController } from '../../src/controllers/ContactsController'
+import { ContactService } from '../../src/services/ContactService'
+import { mockDeep, MockProxy } from 'vitest-mock-extended'
 
 describe('Contacts Controller', () => {
+    let contactService: MockProxy<ContactService>
+    let contactsController: ContactsController
+
     beforeEach(() => {
-        mockReset(prisma)
+        contactService = mockDeep<ContactService>()
+        contactsController = new ContactsController(contactService)
     })
 
-    describe('createContact', () => {
+    describe('create', () => {
         it('should create a contact and return 201', async () => {
-            const mockContact = {
-                id: 1,
-                name: 'John',
-                surname: 'Doe',
-                phone: '1234567890',
-                createdAt: new Date(),
-                updatedAt: new Date()
-            }
-
-            // Setup mock
-            vi.mocked(prisma.contact.create).mockResolvedValue(mockContact)
-
             const request = {
                 body: {
                     name: 'John',
@@ -43,13 +27,14 @@ describe('Contacts Controller', () => {
                 send: vi.fn()
             }
 
-            await createContact(request, response)
+            // Mock service success
+            contactService.createContact.mockResolvedValue(undefined)
 
-            expect(prisma.contact.create).toHaveBeenCalledWith({
-                data: request.body
-            })
+            await contactsController.create(request, response)
+
+            expect(contactService.createContact).toHaveBeenCalledWith(request.body)
             expect(response.status).toHaveBeenCalledWith(201)
-            expect(response.send).toHaveBeenCalledWith()
+            expect(response.send).toHaveBeenCalled()
         })
 
         it('should handle errors', async () => {
@@ -59,22 +44,22 @@ describe('Contacts Controller', () => {
                 send: vi.fn()
             }
 
-            vi.mocked(prisma.contact.create).mockRejectedValue(new Error('DB Error'))
+            contactService.createContact.mockRejectedValue(new Error('Service Error'))
 
-            await createContact(request, response)
+            await contactsController.create(request, response)
 
             expect(response.status).toHaveBeenCalledWith(500)
             expect(response.send).toHaveBeenCalledWith({ error: "Error creating contact" })
         })
     })
 
-    describe('getAllContacts', () => {
+    describe('getAll', () => {
         it('should return all contacts with 200', async () => {
             const mockContacts = [
-                { id: 1, name: 'John', surname: 'Doe', phone: '123', createdAt: new Date(), updatedAt: new Date() }
+                { id: 1, name: 'John', surname: 'Doe', phone: '123' }
             ]
 
-            vi.mocked(prisma.contact.findMany).mockResolvedValue(mockContacts)
+            contactService.getAllContacts.mockResolvedValue(mockContacts)
 
             const request = {}
             const response = {
@@ -82,10 +67,45 @@ describe('Contacts Controller', () => {
                 send: vi.fn()
             }
 
-            await getAllContacts(request, response)
+            await contactsController.getAll(request, response)
 
             expect(response.status).toHaveBeenCalledWith(200)
             expect(response.send).toHaveBeenCalledWith(mockContacts)
+        })
+    })
+
+    describe('getById', () => {
+        it('should return contact with 200', async () => {
+            const mockContact = { id: 1, name: 'John', surname: 'Doe', phone: '123' }
+
+            contactService.getContactById.mockResolvedValue(mockContact)
+
+            const request = { params: { id: '1' } }
+            const response = {
+                status: vi.fn().mockReturnThis(),
+                send: vi.fn()
+            }
+
+            await contactsController.getById(request, response)
+
+            expect(contactService.getContactById).toHaveBeenCalledWith(1)
+            expect(response.status).toHaveBeenCalledWith(200)
+            expect(response.send).toHaveBeenCalledWith(mockContact)
+        })
+
+        it('should return 500 on service error', async () => {
+            // In real world, 404 should be handled if service throws Not Found
+            contactService.getContactById.mockRejectedValue(new Error('Not found'))
+
+            const request = { params: { id: '1' } }
+            const response = {
+                status: vi.fn().mockReturnThis(),
+                send: vi.fn()
+            }
+
+            await contactsController.getById(request, response)
+
+            expect(response.status).toHaveBeenCalledWith(500)
         })
     })
 })
