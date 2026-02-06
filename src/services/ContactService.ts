@@ -1,5 +1,5 @@
-import { Contact } from '../models/contact'
-import { ContactRepository } from '../repositories/ContactRepository'
+import { Contact } from '../models/contact.js'
+import { ContactRepository } from '../repositories/ContactRepository.js'
 
 export class ContactService {
     constructor(private contactRepository: ContactRepository) { }

@@ -1,4 +1,4 @@
-import { Contact } from '../models/contact'
+import { Contact } from '../models/contact.js'
 
 export interface ContactRepository {
     create(data: Contact): Promise<void>

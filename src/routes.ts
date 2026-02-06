@@ -1,6 +1,6 @@
-import { ContactsController } from './controllers/ContactsController'
-import { PrismaContactRepository } from './repositories/prisma/PrismaContactRepository'
-import { ContactService } from './services/ContactService'
+import { ContactsController } from './controllers/ContactsController.js'
+import { PrismaContactRepository } from './repositories/prisma/PrismaContactRepository.js'
+import { ContactService } from './services/ContactService.js'
 
 const contactRepository = new PrismaContactRepository()
 const contactService = new ContactService(contactRepository)

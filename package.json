@@ -31,7 +31,8 @@
     "@prisma/client": "^7.3.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.7.4",
-    "pg": "^8.18.0"
+    "pg": "^8.18.0",
+    "vercel": "^50.12.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

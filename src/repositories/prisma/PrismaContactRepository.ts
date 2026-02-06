@@ -1,6 +1,6 @@
-import { prisma } from '../../database/client'
-import { Contact } from '../../models/contact'
-import { ContactRepository } from '../ContactRepository'
+import { prisma } from '../../database/client.js'
+import { Contact } from '../../models/contact.js'
+import { ContactRepository } from '../ContactRepository.js'
 
 export class PrismaContactRepository implements ContactRepository {
     async create(data: Contact): Promise<void> {
