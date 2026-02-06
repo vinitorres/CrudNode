@@ -4,19 +4,32 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Server (tsx)",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
-            "args": [
-                "src/server.ts"
+            "name": "Debug Local (Docker)",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev:local"
             ],
             "cwd": "${workspaceFolder}",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "console": "integratedTerminal",
-            "env": {
-                "NODE_ENV": "development"
-            }
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Public (Supabase)",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev:public"
+            ],
+            "cwd": "${workspaceFolder}",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }
